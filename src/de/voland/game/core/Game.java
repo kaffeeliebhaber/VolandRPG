@@ -11,6 +11,8 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import de.voland.game.gamestate.GameStateManager;
+
 public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = -955735214025952380L;
@@ -18,7 +20,7 @@ public class Game extends Canvas implements Runnable {
 	// FRAME
 	private JFrame frame;
 	private String title;
-	public static int screenWidth;
+	public static int screenWidth; // TODO: Müssen diese 'static' sein?
 	public static int screenHeight;
 
 	private static final int TARGET_FPS = 60;
@@ -42,13 +44,13 @@ public class Game extends Canvas implements Runnable {
 		setMinimumSize(new Dimension(Game.screenWidth, Game.screenHeight));
 		setMaximumSize(new Dimension(Game.screenWidth, Game.screenHeight));
 
-		final Keyboard keyboard = new Keyboard();
-
-		addKeyListener(keyboard);
-		// addMouseListener(keyboard);
-		addKeyListener(KeyManager.instance);
-		addMouseListener(MouseManager.instance);
-		addMouseMotionListener(MouseManager.instance);
+//		final Keyboard keyboard = new Keyboard();
+//
+//		addKeyListener(keyboard);
+//		// addMouseListener(keyboard);
+//		addKeyListener(KeyManager.instance);
+//		addMouseListener(MouseManager.instance);
+//		addMouseMotionListener(MouseManager.instance);
 
 		setFocusable(true);
 		requestFocus();
@@ -90,8 +92,8 @@ public class Game extends Canvas implements Runnable {
 
 	public void init() {
 		gameStateManager = new GameStateManager();
-		gameStateManager.add("PLAY", new PlayState(gameStateManager));
-		gameStateManager.change("PLAY");
+//		gameStateManager.add("PLAY", new PlayState(gameStateManager));
+//		gameStateManager.change("PLAY");
 	}
 
 	public synchronized void stopp() {
