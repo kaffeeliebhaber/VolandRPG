@@ -22,7 +22,7 @@ public class ImageLoader {
 		return image;
 	}
 	
-	public static BufferedImage loadImage(URL url) {
-		return ImageLoader.loadImage(url.getPath());
-	}
+//	public static BufferedImage loadImage(URL url) {
+//		return ImageLoader.loadImage(url.getPath());
+//	}
 }

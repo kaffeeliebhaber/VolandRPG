@@ -26,5 +26,6 @@ local.properties
 .loadpath
 .factorypath
 *.class
-*.java
+
+*.class
 *.class
