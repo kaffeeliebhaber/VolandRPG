@@ -12,6 +12,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 import de.voland.game.gamestate.GameStateManager;
+import de.voland.game.gamestate.PlayState;
 
 public class Game extends Canvas implements Runnable {
 
@@ -92,8 +93,8 @@ public class Game extends Canvas implements Runnable {
 
 	public void init() {
 		gameStateManager = new GameStateManager();
-//		gameStateManager.add("PLAY", new PlayState(gameStateManager));
-//		gameStateManager.change("PLAY");
+		gameStateManager.add("PLAY", new PlayState(gameStateManager));
+		gameStateManager.change("PLAY");
 	}
 
 	public synchronized void stopp() {
