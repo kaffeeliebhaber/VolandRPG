@@ -1,51 +1,46 @@
 package de.voland.game.chunksystem;
 
 import java.awt.Graphics;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import de.voland.game.core.Camera;
 
 public class ChunkSystem {
 	
-	private final Map<Integer, TilemapManager> chunks;
+	private final Collection<TilemapManager> tilemapManagers;
 	@SuppressWarnings("unused")
 	private final int objectLayerID;
 	private int currentChunkID;
-
-	public ChunkSystem(final Map<Integer, TilemapManager> chunks, final int objectLayerID, int currentChunkID) {
-		this.chunks = chunks;
+	
+	public ChunkSystem(final int objectLayerID) {
 		this.objectLayerID = objectLayerID;
-		this.currentChunkID = currentChunkID;
+		tilemapManagers = new ArrayList<TilemapManager>();
 	}
 	
 	public void changeChunk(final int newChunkID) {
-		chunks.get(currentChunkID).exit();
-		chunks.get(newChunkID).enter();
+		getTilemapManager(currentChunkID).exit();
+		getTilemapManager(newChunkID).enter();
 		changeChunkID(newChunkID);
+	}
+	
+	public void addTilemapManager(final TilemapManager tilemapManager) {
+		tilemapManagers.add(tilemapManager);
 	}
 	
 	private void changeChunkID(final int newChunkID) {
 		currentChunkID = newChunkID;
 	}
 	
+	private TilemapManager getTilemapManager(final int ID) {
+		return tilemapManagers.stream().filter(tm -> tm.getID() == ID).findAny().get();
+	}
+	
 	public void update(float timeSinceLastFrame) {
-		chunks.get(currentChunkID).update(timeSinceLastFrame);
+		getTilemapManager(currentChunkID).update(timeSinceLastFrame);
 	}
 	
 	public void render(Graphics g, Camera camera) {
-		chunks.get(currentChunkID).render(g, camera);
+		getTilemapManager(currentChunkID).render(g, camera);
 	}
-	
-	// TODO: REMOVE LATER | JUST FOR TESTING PURPOSES
-	public void print() {
-		
-		Set<Integer> chunkIDs = chunks.keySet();
-
-		for (int chunkID : chunkIDs) {
-			final TilemapManager tilemapManager = chunks.get(chunkID);
-			tilemapManager.print();
-		}
-	}
-	
 }

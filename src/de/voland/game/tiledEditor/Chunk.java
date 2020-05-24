@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import de.voland.game.chunksystem.TilemapManager;
+import de.voland.game.gfx.Spritesheet;
 
 public class Chunk {
 
@@ -24,17 +25,13 @@ public class Chunk {
 		layers.add(layer);
 	}
 	
-	//
-	public void addLayer(final int layerID, final int[][] layerData, final int tilesX, final int tilesY, final int tileWidth, final int tileHeight) {
-		addLayer(new Layer(layerID, layerData, tilesX, tilesY, tileWidth, tileHeight));
+	public void addLayer(final int layerID, final int[][] layerData, final int tilesX, final int tilesY, final int tileWidth, final int tileHeight, final Spritesheet spritesheet) {
+		addLayer(new Layer(layerID, layerData, tilesX, tilesY, tileWidth, tileHeight, spritesheet));
 	}
 
 	public TilemapManager createTilemapManager() {
-		
-		final TilemapManager tilemapManager = new TilemapManager();
-		
-		layers.stream().forEach(l -> tilemapManager.addTilemap(l.getLayerID(), l.createTilemap()));
-		
+		final TilemapManager tilemapManager = new TilemapManager(chunkID);
+		layers.stream().forEach(l -> tilemapManager.addTilemap(l.createTilemap()));
 		return tilemapManager;
 	}
 	

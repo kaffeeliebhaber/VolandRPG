@@ -129,9 +129,9 @@ public class TiledEditorMapLoader implements ChunkSystemCreatorModel {
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < height; row++) {
 				
-				final int converted1DIndex = convert2DimInto2DIndex(col, row, width);
+				final int converted1DIndex = convert2DDimInto2DIndex(col, row, width);
 				final String rawCellData = replaceEmptySpace(currentLayerData[converted1DIndex]);
-				final int parseIntRawCellData = Integer.parseInt(rawCellData) - TILED_ID_DELTA;
+				final int parseIntRawCellData = Integer.parseInt(rawCellData) - TILED_ID_DELTA; // TODO: WRITE OWN TRANSFORMER CLASS FOR THIS!!!
 				setData(data, col, row, parseIntRawCellData);
 			}
 		}
@@ -139,7 +139,7 @@ public class TiledEditorMapLoader implements ChunkSystemCreatorModel {
 		return data;
 	}
 	
-	private int convert2DimInto2DIndex(final int col, final int row, final int width) {
+	private int convert2DDimInto2DIndex(final int col, final int row, final int width) {
 		return col + row * width;
 	}
 	

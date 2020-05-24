@@ -2,23 +2,22 @@ package de.voland.game.tiledEditor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import de.voland.game.chunksystem.ChunkSystem;
-import de.voland.game.chunksystem.TilemapManager;
+import de.voland.game.gfx.Spritesheet;
 
 public class ChunkSystemCreator {
 
 	private final ChunkSystemCreatorModel model;
 	private final Collection<Chunk> chunks;
-	private final int INITIAL_CHUNKID = 0;
+	private final Spritesheet spritesheet;
 
-	public ChunkSystemCreator(final ChunkSystemCreatorModel model) {
+	public ChunkSystemCreator(final ChunkSystemCreatorModel model, final Spritesheet spritesheet) {
 		this.model = model;
+		this.spritesheet = spritesheet;
+		
 		checkChunkSystemCreatorModel(model);
 		chunks = new ArrayList<Chunk>();
 		init();
@@ -30,19 +29,20 @@ public class ChunkSystemCreator {
 		
 		final LayerDataMapper layerDataMapper = model.getLayerDataMapper();
 		final int numberOfChunks = calcNumberOfChunks(model);
+		
 		final Set<Integer> layerIDs = layerDataMapper.getLayerIDs();
 
 		for (int layerID : layerIDs) {
 			
 			int[][] layerData = layerDataMapper.get(layerID);
-
-			for (int chunk = 0; chunk < numberOfChunks; chunk++) {
+			
+			for (int chunkID = 0; chunkID < numberOfChunks; chunkID++) {
 				
-				createChunkIfNotExist(chunk);
+				createEmptyChunkIfNotExist(chunkID);
 				
-				int[][] extractedLayerData = createExtractedLayerData(chunk, layerData, model.getTilesX(), model.getTilesY(), model.getChunkWidth(), model.getChunkHeight());
+				final int[][] extractedLayerData = createExtractedLayerData(chunkID, layerData, model.getTilesX(), model.getTilesY(), model.getChunkWidth(), model.getChunkHeight());
 				
-				getChunk(chunk).addLayer(layerID, extractedLayerData, model.getChunkWidth(), model.getChunkHeight(), model.getTileWidth(), model.getTileHeight());
+				getChunk(chunkID).addLayer(layerID, extractedLayerData, model.getChunkWidth(), model.getChunkHeight(), model.getTileWidth(), model.getTileHeight(), spritesheet);
 			}
 		}
 	}
@@ -62,15 +62,17 @@ public class ChunkSystemCreator {
 	}
 	
 	private Chunk getChunk(final int chunkID) {
-		return chunks.stream().filter(e -> e.getChunkID() == chunkID).findAny().get();
+		return findChunk(chunkID).get();
 	}
 	
-	private void createChunkIfNotExist(final int chunkID) {
-		final List<Chunk> chunkList = chunks.stream().filter(e -> e.getChunkID() == chunkID).collect(Collectors.toList());
-		
-		if (chunkList == null || chunkList.size() <= 0) {
+	private Optional<Chunk> findChunk(final int chunkID) {
+		return chunks.stream().filter(e -> e.getChunkID() == chunkID).findAny();
+	}
+	
+	private void createEmptyChunkIfNotExist(final int chunkID) {
+		if (!findChunk(chunkID).isPresent()) {
 			chunks.add(new Chunk(chunkID));
-		} 
+		}
 	}
 	
 	private int calcChunkStartPositionX(final int chunkID, final int tilesX, final int chunkWidth) {
@@ -108,11 +110,12 @@ public class ChunkSystemCreator {
 	}
 	
 	public ChunkSystem createChunkSystem() {
-		final Map<Integer, TilemapManager> chunkSystemData = new HashMap<Integer, TilemapManager>();
 		
-		chunks.stream().forEach(c -> chunkSystemData.put(c.getChunkID(), c.createTilemapManager()));
+		final ChunkSystem chunkSystem = new ChunkSystem(model.getObjectLayerID());
 		
-		return new ChunkSystem(chunkSystemData, model.getObjectLayerID(), INITIAL_CHUNKID);
+		chunks.stream().forEach(c -> chunkSystem.addTilemapManager(c.createTilemapManager()));
+		
+		return chunkSystem;
 	}
 	
 //	public static int[][] convertToIntArray(final Collection<String> layerDataCollection, final int width, final int height) {

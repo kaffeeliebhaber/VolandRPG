@@ -1,12 +1,16 @@
-package test;
+package de.voland.game.testObjects;
 
 import de.voland.game.tiledEditor.BoundingBox2DMapper;
 import de.voland.game.tiledEditor.ChunkSystemCreatorModel;
 import de.voland.game.tiledEditor.LayerDataMapper;
 
-public class TestDefaultChunkSystemCreatorModel implements ChunkSystemCreatorModel {
+public class ChunkSystemCreatorModelMock implements ChunkSystemCreatorModel {
 	
-	private final int CHUNK_SIZE = 4;
+	private final int chunkWidth;
+	
+	public ChunkSystemCreatorModelMock(final int chunkWidth) {
+		this.chunkWidth = chunkWidth;
+	}
 	
 	@Override
 	public int getTilesY() {
@@ -20,17 +24,17 @@ public class TestDefaultChunkSystemCreatorModel implements ChunkSystemCreatorMod
 	
 	@Override
 	public int getTileWidth() {
-		return 32;
+		return 0;
 	}
 	
 	@Override
 	public int getTileHeight() {
-		return 32;
+		return 0;
 	}
 	
 	@Override
 	public int getObjectLayerID() {
-		return 2;
+		return 0;
 	}
 	
 	@Override
@@ -52,12 +56,12 @@ public class TestDefaultChunkSystemCreatorModel implements ChunkSystemCreatorMod
 	
 	@Override
 	public int getChunkWidth() {
-		return CHUNK_SIZE;
+		return chunkWidth;
 	}
 	
 	@Override
 	public int getChunkHeight() {
-		return CHUNK_SIZE;
+		return chunkWidth;
 	}
 	
 	@Override

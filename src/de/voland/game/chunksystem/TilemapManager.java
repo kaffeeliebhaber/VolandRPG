@@ -1,87 +1,43 @@
 package de.voland.game.chunksystem;
 
 import java.awt.Graphics;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import de.voland.game.core.Camera;
 
-/**
- * Ein TilemapManager verwaltet die unterschiedlichen Tilemaps je Chunk.
- * Layer:1 -> Tilemap a
- * Layer:2 -> Tilemap b
- * 
- * usw.
- * 
- * @author User
- *
- */
-
 public class TilemapManager {
 
-	private final Map<Integer, Tilemap> tilemaps;
+	private final int ID;
+	private final Collection<Tilemap> tilemaps;
 	
-	public TilemapManager() {
-		tilemaps = new HashMap<Integer, Tilemap>();
+	public TilemapManager(final int ID) {
+		this.ID = ID;
+		tilemaps = new ArrayList<Tilemap>();
 	}
 	
-	/**
-	 * Wird aufgerufen, wenn der TilemapManager zum ersten mal aufgerufen wird
-	 */
-	public void enter() {
-		
+	public int getID() {
+		return ID;
 	}
 	
-	/**
-	 * Wird aufgerufen, wenn der TilemapManager verlassen wird
-	 */
-	public void exit() {
-		
+	public void enter() {}
+	
+	public void exit() {}
+	
+	public void addTilemap(final Tilemap tilemap) {
+		tilemaps.add(tilemap);
 	}
 	
-	public void addTilemap(final int layerID, final Tilemap tilemap) {
-		if (!tilemaps.containsKey(layerID)) {
-			tilemaps.put(layerID, tilemap);
-		}
-	}
-	
-	public void removeTilemap(final int layerID) {
-		if (containsTilemapId(layerID)) {
-			tilemaps.remove(layerID);
-		}
-	}
-	
-	private boolean containsTilemapId(int layerID) {
-		return tilemaps.containsKey(layerID);
-	}
-	
-	public Tilemap getTilemap(final int layerID) {
-		
-		Tilemap tilemap = null;
-		
-		if (containsTilemapId(layerID)) {
-			tilemap = tilemaps.get(layerID);
-		}
-		
-		return tilemap;
+	public void removeTilemap(final Tilemap tilemap) {
+		tilemaps.remove(tilemap);
 	}
 	
 	public void update(float timeSinceLastFrame) {
-		tilemaps.values().stream().forEach(t -> t.update(timeSinceLastFrame));
+		tilemaps.stream().forEach(t -> t.update(timeSinceLastFrame));
 	}
 	
-	public void render(Graphics g, Camera camera) {
-		tilemaps.values().stream().forEach(t -> t.render(g, camera));
+	public void render(final Graphics g, final Camera camera) {
+		tilemaps.stream().forEach(t -> t.render(g, camera));
 	}
-	
-	// TODO: REMOVE LATER | JUST FOR TESTING PURPOSES
-	public void print() {
-		Set<Integer> tilemapIDs = tilemaps.keySet();
-		
-		for (int tilemapID : tilemapIDs) {
-			final Tilemap tilemap = tilemaps.get(tilemapID);
-			tilemap.print();
-		}
-	}
+
 }
