@@ -1,4 +1,4 @@
-package test;
+package de.voland.game;
 
 import java.lang.reflect.InvocationTargetException;
 

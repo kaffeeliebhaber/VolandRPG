@@ -1,7 +1,7 @@
 package de.voland.game.tiledEditor;
 
-import de.voland.game.chunksystem.Tile;
 import de.voland.game.chunksystem.Tilemap;
+import de.voland.game.gfx.Spritesheet;
 
 public class Layer {
 
@@ -11,14 +11,16 @@ public class Layer {
 	private final int tileHeight;
 	private final int tilesX;
 	private final int tilesY;
+	private final Spritesheet spritesheet;
 	
-	public Layer(final int layerID, int[][] data, final int tilesX, final int tilesY, final int tileWidth, final int tileHeight) {
+	public Layer(final int layerID, int[][] data, final int tilesX, final int tilesY, final int tileWidth, final int tileHeight, final Spritesheet spritesheet) {
 		this.layerID = layerID;
 		this.data = data;
 		this.tilesX = tilesX;
 		this.tilesY = tilesY;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
+		this.spritesheet = spritesheet;
 	}
 	
 	public int getLayerID() {
@@ -27,25 +29,20 @@ public class Layer {
 	
 	public Tilemap createTilemap() {
 		
-		Tile[][] tiles = new Tile[tilesX][tilesY];
+		final Tilemap tilemap = new Tilemap(layerID, tilesX, tilesY, tileWidth, tileHeight);
 		
 		for (int x = 0; x < data.length; x++) {
 			for (int y = 0; y < data[x].length; y++) {
-				tiles[x][y] = new Tile(data[x][y], x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+				final int currentLayerDataIndex = data[x][y];
+				
+				if (data[x][y] != -1) {
+					tilemap.addTile(data[x][y], x, y, spritesheet.getImageByIndex(currentLayerDataIndex));
+				}
+
 			}
 		}
 		
-		return new Tilemap(tiles, tilesX, tilesY);
-	}
-	
-	// TODO: REMOVE LATER | JUST FOR TESTING PURPOSES
-	public void print() {
-		for (int x = 0; x < data.length; x++) {
-			for (int y = 0; y < data[x].length; y++) {
-				System.out.print(data[x][y] + " ");
-			}
-			System.out.println("");
-		}
+		return tilemap;
 	}
 
 	@Override
